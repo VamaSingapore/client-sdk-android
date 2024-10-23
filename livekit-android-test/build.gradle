@@ -105,10 +105,10 @@ tasks.withType(Test).configureEach {
     systemProperty "robolectric.logging.enabled", true
 }
 
-//apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/dokka-kotlin-dep-fix.gradle')
 
-/*afterEvaluate {
+afterEvaluate {
     publishing {
         publications {
             // Creates a Maven publication called "release".
@@ -123,4 +123,4 @@ apply from: rootProject.file('gradle/dokka-kotlin-dep-fix.gradle')
             }
         }
     }
-}*/
+}

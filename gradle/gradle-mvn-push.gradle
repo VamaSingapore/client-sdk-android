@@ -53,6 +53,18 @@ def configurePom(pom) {
 }
 
 afterEvaluate { project ->
+    publishing {
+        repositories {
+            maven {
+                url = "https://jitpack.io/#VamaSingapore/client-sdk-android"
+
+                credentials(PasswordCredentials) {
+                    username = "vamalivekit"
+                    password = "vamalivekit"
+                }
+            }
+        }
+    }
     if (project.getPlugins().hasPlugin('com.android.application') ||
             project.getPlugins().hasPlugin('com.android.library')) {
 
@@ -107,7 +119,7 @@ afterEvaluate { project ->
         publication.groupId = GROUP
         publication.version = VERSION_NAME
 
-//        publication.artifact androidSourcesJar
+        publication.artifact androidSourcesJar
 //        publication.artifact androidJavadocsJar
 
         configurePom(publication.pom)

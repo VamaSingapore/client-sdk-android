@@ -20,9 +20,36 @@
  */
 
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 version = VERSION_NAME
 group = GROUP
+
+def isReleaseBuild() {
+    return VERSION_NAME.contains("SNAPSHOT") == false
+}
+
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+            : "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+
+def getRepositoryUsername() {
+    return hasProperty('nexusUsername') ? nexusUsername : ""
+}
+
+def getRepositoryPassword() {
+    return hasProperty('nexusPassword') ? nexusPassword : ""
+}
+
+boolean getReleaseSigningEnabled() {
+    return hasProperty('RELEASE_SIGNING_ENABLED') ? RELEASE_SIGNING_ENABLED.toBoolean() : true
+}
 
 def configurePom(pom) {
     pom.name = POM_NAME
@@ -53,6 +80,21 @@ def configurePom(pom) {
 }
 
 afterEvaluate { project ->
+    publishing {
+        repositories {
+            maven {
+                def releasesRepoUrl = getReleaseRepositoryUrl()
+                def snapshotsRepoUrl = getSnapshotRepositoryUrl()
+                url = isReleaseBuild() ? releasesRepoUrl : snapshotsRepoUrl
+
+                credentials(PasswordCredentials) {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
+                }
+            }
+        }
+    }
+
     if (project.getPlugins().hasPlugin('com.android.application') ||
             project.getPlugins().hasPlugin('com.android.library')) {
 
@@ -111,5 +153,13 @@ afterEvaluate { project ->
 //        publication.artifact androidJavadocsJar
 
         configurePom(publication.pom)
+    }
+
+    if (getReleaseSigningEnabled()) {
+        signing {
+            publishing.publications.all { publication ->
+                sign publication
+            }
+        }
     }
 }

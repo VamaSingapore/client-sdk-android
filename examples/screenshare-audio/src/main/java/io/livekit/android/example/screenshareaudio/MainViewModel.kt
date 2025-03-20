@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 LiveKit, Inc.
+ * Copyright 2024-2025 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             room.localParticipant.setScreenShareEnabled(true, data)
-
             // Publish the audio track.
             room.localParticipant.setMicrophoneEnabled(true)
             val screenCaptureTrack = room.localParticipant.getTrackPublication(Track.Source.SCREEN_SHARE)?.track as? LocalVideoTrack ?: return@launch

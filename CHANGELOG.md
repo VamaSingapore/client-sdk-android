@@ -1,5 +1,63 @@
 # client-sdk-android
 
+## 2.13.0
+
+### Minor Changes
+
+- Prewarm audio to speed up mic publishing - [#623](https://github.com/livekit/client-sdk-android/pull/623) ([@davidliu](https://github.com/davidliu))
+
+- Fast track publication support - [#612](https://github.com/livekit/client-sdk-android/pull/612) ([@davidliu](https://github.com/davidliu))
+
+### Patch Changes
+
+- Fix publish deadlock when no response from server - [#618](https://github.com/livekit/client-sdk-android/pull/618) ([@davidliu](https://github.com/davidliu))
+
+- Add SCREEN_SHARE_AUDIO as a Track.Source.Type - [#610](https://github.com/livekit/client-sdk-android/pull/610) ([@davidliu](https://github.com/davidliu))
+
+- Surface canPublishSources, canUpdateMetadata, and canSubscribeMetrics on ParticipantPermission - [#610](https://github.com/livekit/client-sdk-android/pull/610) ([@davidliu](https://github.com/davidliu))
+
+- Fast fail attempts to publish without permissions - [#618](https://github.com/livekit/client-sdk-android/pull/618) ([@davidliu](https://github.com/davidliu))
+
+## 2.12.3
+
+### Patch Changes
+
+- Fixes deadlock on publish track - [#604](https://github.com/livekit/client-sdk-android/pull/604) ([@jeankruger](https://github.com/jeankruger))
+
+## 2.12.2
+
+### Patch Changes
+
+- Add version number to rpc requests - [#605](https://github.com/livekit/client-sdk-android/pull/605) ([@davidliu](https://github.com/davidliu))
+
+## 2.12.1
+
+### Patch Changes
+
+- Fix documented default of preferredDeviceList in AudioSwitchHandler - [#584](https://github.com/livekit/client-sdk-android/pull/584) ([@davidliu](https://github.com/davidliu))
+
+- Allow access to participant field in ParticipantAttributesChanged event - [#591](https://github.com/livekit/client-sdk-android/pull/591) ([@binkos](https://github.com/binkos))
+
+## 2.12.0
+
+### Minor Changes
+
+- Default prioritizing speaker over earpiece - [#579](https://github.com/livekit/client-sdk-android/pull/579) ([@davidliu](https://github.com/davidliu))
+
+- Implement RPC - [#578](https://github.com/livekit/client-sdk-android/pull/578) ([@davidliu](https://github.com/davidliu))
+
+- Explicitly expose AudioSwitchHandler from Room for easier audio handling - [#579](https://github.com/livekit/client-sdk-android/pull/579) ([@davidliu](https://github.com/davidliu))
+
+### Patch Changes
+
+- Add publishDTMF method for Sending DTMF signals to SIP Participant - [#576](https://github.com/livekit/client-sdk-android/pull/576) ([@dipak140](https://github.com/dipak140))
+
+## 2.11.1
+
+### Patch Changes
+
+- Fix maxFps not applying for very low framerates - [#573](https://github.com/livekit/client-sdk-android/pull/573) ([@davidliu](https://github.com/davidliu))
+
 ## 2.11.0
 
 ### Minor Changes

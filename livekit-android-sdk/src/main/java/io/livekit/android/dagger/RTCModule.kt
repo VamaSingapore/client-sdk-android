@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 LiveKit, Inc.
+ * Copyright 2023-2025 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,17 @@ import android.javax.sdp.SdpFactory
 import android.media.AudioAttributes
 import android.media.MediaRecorder
 import android.os.Build
-import androidx.annotation.Nullable
 import dagger.Module
 import dagger.Provides
 import io.livekit.android.LiveKit
 import io.livekit.android.audio.AudioBufferCallbackDispatcher
 import io.livekit.android.audio.AudioProcessingController
 import io.livekit.android.audio.AudioProcessorOptions
+import io.livekit.android.audio.AudioRecordPrewarmer
 import io.livekit.android.audio.AudioRecordSamplesDispatcher
 import io.livekit.android.audio.CommunicationWorkaround
+import io.livekit.android.audio.JavaAudioRecordPrewarmer
+import io.livekit.android.audio.NoAudioRecordPrewarmer
 import io.livekit.android.memory.CloseableManager
 import io.livekit.android.util.LKLog
 import io.livekit.android.util.LoggingLevel
@@ -148,10 +150,8 @@ internal object RTCModule {
     @JvmSuppressWildcards
     fun audioModule(
         @Named(InjectionNames.OVERRIDE_AUDIO_DEVICE_MODULE)
-        @Nullable
         audioDeviceModuleOverride: AudioDeviceModule?,
         @Named(InjectionNames.OVERRIDE_JAVA_AUDIO_DEVICE_MODULE_CUSTOMIZER)
-        @Nullable
         moduleCustomizer: ((builder: JavaAudioDeviceModule.Builder) -> Unit)?,
         audioOutputAttributes: AudioAttributes,
         appContext: Context,
@@ -247,10 +247,18 @@ internal object RTCModule {
     }
 
     @Provides
+    fun audioPrewarmer(audioDeviceModule: AudioDeviceModule): AudioRecordPrewarmer {
+        return if (audioDeviceModule is JavaAudioDeviceModule) {
+            JavaAudioRecordPrewarmer(audioDeviceModule)
+        } else {
+            NoAudioRecordPrewarmer()
+        }
+    }
+
+    @Provides
     @Singleton
     fun eglBase(
         @Named(InjectionNames.OVERRIDE_EGL_BASE)
-        @Nullable
         eglBaseOverride: EglBase?,
         memoryManager: CloseableManager,
     ): EglBase {
@@ -271,7 +279,6 @@ internal object RTCModule {
         videoHwAccel: Boolean,
         eglContext: EglBase.Context,
         @Named(InjectionNames.OVERRIDE_VIDEO_ENCODER_FACTORY)
-        @Nullable
         videoEncoderFactoryOverride: VideoEncoderFactory?,
     ): VideoEncoderFactory {
         return videoEncoderFactoryOverride ?: if (videoHwAccel) {
@@ -316,7 +323,6 @@ internal object RTCModule {
         videoHwAccel: Boolean,
         eglContext: EglBase.Context,
         @Named(InjectionNames.OVERRIDE_VIDEO_DECODER_FACTORY)
-        @Nullable
         videoDecoderFactoryOverride: VideoDecoderFactory?,
     ): VideoDecoderFactory {
         return videoDecoderFactoryOverride ?: if (videoHwAccel) {

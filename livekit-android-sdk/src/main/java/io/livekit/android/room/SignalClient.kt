@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 LiveKit, Inc.
+ * Copyright 2023-2025 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ constructor(
     private var currentWs: WebSocket? = null
     private var isReconnecting: Boolean = false
     var listener: Listener? = null
-    private var serverVersion: Semver? = null
+    internal var serverVersion: Semver? = null
     private var lastUrl: String? = null
     private var lastOptions: ConnectOptions? = null
     private var lastRoomOptions: RoomOptions? = null
@@ -362,6 +362,7 @@ constructor(
             SD_TYPE_ANSWER -> SessionDescription.Type.ANSWER
             SD_TYPE_OFFER -> SessionDescription.Type.OFFER
             SD_TYPE_PRANSWER -> SessionDescription.Type.PRANSWER
+            SD_TYPE_ROLLBACK -> SessionDescription.Type.ROLLBACK
             else -> throw IllegalArgumentException("invalid RTC SdpType: ${sd.type}")
         }
         return SessionDescription(rtcSdpType, sd.sdp)
@@ -841,6 +842,7 @@ constructor(
         lastUrl = null
         lastOptions = null
         lastRoomOptions = null
+        serverVersion = null
     }
 
     interface Listener {
@@ -881,6 +883,7 @@ constructor(
         const val SD_TYPE_ANSWER = "answer"
         const val SD_TYPE_OFFER = "offer"
         const val SD_TYPE_PRANSWER = "pranswer"
+        const val SD_TYPE_ROLLBACK = "rollback"
         const val SDK_TYPE = "android"
 
         private val skipQueueTypes = listOf(

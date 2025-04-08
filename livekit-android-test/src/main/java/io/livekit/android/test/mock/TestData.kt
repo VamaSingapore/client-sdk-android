@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 LiveKit, Inc.
+ * Copyright 2023-2025 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package io.livekit.android.test.mock
 
 import livekit.LivekitModels
 import livekit.LivekitRtc
+import java.util.UUID
 
 object TestData {
 
@@ -55,13 +56,15 @@ object TestData {
         identity = "local_participant_identity"
         state = LivekitModels.ParticipantInfo.State.ACTIVE
         metadata = "local_metadata"
-        permission = LivekitModels.ParticipantPermission.newBuilder()
-            .setCanPublish(true)
-            .setCanSubscribe(true)
-            .setCanPublishData(true)
-            .setHidden(true)
-            .setRecorder(false)
-            .build()
+        permission = with(LivekitModels.ParticipantPermission.newBuilder()) {
+            canPublish = true
+            canSubscribe = true
+            canPublishData = true
+
+            hidden = false
+            recorder = false
+            build()
+        }
         putAttributes("attribute", "value")
         build()
     }
@@ -110,7 +113,7 @@ object TestData {
                     build()
                 },
             )
-            serverVersion = "0.15.2"
+            serverVersion = "1.8.0"
             build()
         }
         build()
@@ -177,17 +180,20 @@ object TestData {
     val PERMISSION_CHANGE = with(LivekitRtc.SignalResponse.newBuilder()) {
         update = with(LivekitRtc.ParticipantUpdate.newBuilder()) {
             addParticipants(
-                LOCAL_PARTICIPANT.toBuilder()
-                    .setPermission(
-                        LivekitModels.ParticipantPermission.newBuilder()
-                            .setCanPublish(false)
-                            .setCanSubscribe(false)
-                            .setCanPublishData(false)
-                            .setHidden(false)
-                            .setRecorder(false)
-                            .build(),
-                    )
-                    .build(),
+                with(LOCAL_PARTICIPANT.toBuilder()) {
+                    permission = with(LivekitModels.ParticipantPermission.newBuilder()) {
+                        canPublish = true
+                        canSubscribe = false
+                        canPublishData = false
+                        addCanPublishSources(LivekitModels.TrackSource.CAMERA)
+                        canUpdateMetadata = false
+                        canSubscribeMetrics = false
+                        hidden = false
+                        recorder = false
+                        build()
+                    }
+                    build()
+                },
             )
             build()
         }
@@ -323,6 +329,18 @@ object TestData {
                     build()
                 },
             )
+            build()
+        }
+        build()
+    }
+    val DATA_PACKET_RPC_REQUEST = with(LivekitModels.DataPacket.newBuilder()) {
+        participantIdentity = REMOTE_PARTICIPANT.identity
+        rpcRequest = with(LivekitModels.RpcRequest.newBuilder()) {
+            id = UUID.randomUUID().toString()
+            method = "hello"
+            payload = "hello world"
+            responseTimeoutMs = 10000
+            version = 1
             build()
         }
         build()
